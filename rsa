@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+from sys import argv
+import math
+
+"""RSA Factoring Challenge"""
+
+def is_prime(num):
+    """Check if a number is prime."""
+    if num < 2:
+        return False
+    for i in range(2, int(math.sqrt(num)) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def factory(num):
+    """Gets prime factors of a number.
+
+    Args:
+        num (int): The number to factorize.
+
+    Returns:
+        tuple: A tuple containing the two prime factors.
+    """
+    if num % 2 == 0:
+        i = 2
+        return int(num//i), i
+    else:
+        sq = int(math.sqrt(num)) + 1
+        for i in range(3, sq, +2):
+            if num % i == 0 and is_prime(i):
+                return i, int(num//i)
+            if num % (sq + i) == 0 and is_prime(sq + i):
+                return sq + i, int(num//(sq + i))
+            if num % (sq - i) == 0 and is_prime(sq - i):
+                return sq - i, int(num//(sq - i))
+
+def factors(filename):
+    """Reads numbers from a file and prints their prime factorization."""
+    with open(filename, encoding="utf-8") as my_file:
+        for line in my_file.readlines():
+            n = int(line)
+            p, q = factory(n)
+            print("{}={}*{}".format(n, p, q))
+
+if __name__ == "__main__":
+    factors(argv[1])
